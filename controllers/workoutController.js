@@ -1,5 +1,6 @@
 const Workout = require('../models/workoutModel')
 const mongoose = require('mongoose')
+const assert = require('node:assert')
 
 // get all workouts
 const getWorkouts = async (req, res) => {
@@ -30,23 +31,12 @@ const getWorkout = async (req, res) => {
 const createWorkout = async (req, res) => {
     const { title, load, reps } = req.body
 
-    let emptyFields = []
-
-    if (!title) {
-        emptyFields.push('title')
-    }
-    if (!load) {
-        emptyFields.push('load')
-    }
-    if (!reps) {
-        emptyFields.push('reps')
-    }
-    if (emptyFields.length > 0) {
-        return res.status(400).json({ error: 'Please fill in all fields', emptyFields })
-    }
-
     // add to the database
     try {
+        assert(title && load && reps, 'Please fill in all fields')
+        assert(typeof title === 'string', 'title must be a string')
+        assert(typeof load === 'number', 'load must be a number')
+        assert(typeof reps === 'number', 'reps must be a number')
         const user_id = req.user._id
         const workout = await Workout.create({ title, load, reps, user_id })
         res.status(200).json(workout)
@@ -60,13 +50,13 @@ const deleteWorkout = async (req, res) => {
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'No such workout' })
+        return res.status(404).json({ error: 'No such workout' })
     }
 
     const workout = await Workout.findOneAndDelete({ _id: id })
 
     if (!workout) {
-        return res.status(400).json({ error: 'No such workout' })
+        return res.status(404).json({ error: 'No such workout' })
     }
 
     res.status(200).json(workout)
@@ -77,17 +67,25 @@ const updateWorkout = async (req, res) => {
     const { id } = req.params
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).json({ error: 'No such workout' })
+        return res.status(404).json({ error: 'No such workout' })
     }
+
+    const newData = {
+        reps: req.body.reps,
+        load: req.body.load
+    }
+
+    if (newData.reps === undefined || typeof newData.reps !== 'number') delete newData.reps
+    if (newData.load === undefined || typeof newData.load !== 'number') delete newData.load
 
     const workout = await Workout.findOneAndUpdate(
         { _id: id }, 
-        {...req.body},
+        { ...newData },
         { new: true }
     )
 
     if (!workout) {
-        return res.status(400).json({ error: 'No such workout' })
+        return res.status(404).json({ error: 'No such workout' })
     }
 
     res.status(200).json(workout)
