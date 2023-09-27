@@ -1,0 +1,546 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Workout Buddy API",
+    "version": "1.0.0",
+    "description": "This is a REST API application for CodeStart"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api",
+      "description": "Development server"
+    },
+    {
+      "url": "https://workoutapi-fjcr.onrender.com/api",
+      "description": "Production server"
+    }
+  ],
+  "schemes": [
+    "http", "https"
+  ],
+  "authorization": {
+    "type": "Bearer token",
+    "in": "header",
+    "name": "Authorization",
+    "description": "Bearer token"
+  },
+  "paths": {
+    "/user/login": {
+      "post": {
+        "summary": "Login a user",
+        "description": "Login a user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email",
+                    "example": "testuser@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password. Must be at least 8 characters long. Must contain at least one uppercase letter, one lowercase letter, one number and one special character.",
+                    "example": "Password1!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "User email",
+                      "example": "testuser@email.com"
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "JWT bearer token",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User authentication unsuccessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Invalid email or password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/user/signup": {
+      "post": {
+        "summary": "Register a user",
+        "description": "Register a user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "User email",
+                    "example": "testuser@email.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "User password. Must be at least 8 characters long. Must contain at least one uppercase letter, one lowercase letter, one number and one special character.",
+                    "example": "Password1!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User authentication successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "description": "User email",
+                      "example": "testuser@email.com"
+                    },
+                    "token": {
+                      "type": "string",
+                      "description": "JWT bearer token",
+                      "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User authentication unsuccessful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Invalid email or password"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/workouts": {
+      "get": {
+        "summary": "Get all workouts",
+        "description": "Get all workouts",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "All workouts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Workout"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new workout",
+        "description": "Create a new workout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Workout title",
+                    "example": "Barbell Curl"
+                  },
+                  "load": {
+                    "type": "number",
+                    "description": "Load",
+                    "example": 20
+                  },
+                  "reps": {
+                    "type": "number",
+                    "description": "Number of reps",
+                    "example": 15
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Workout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workout"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Please fill in all fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Please fill in all fields"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      }
+    },
+    "/workouts/{id}": {
+      "get": {
+        "summary": "Get a single workout",
+        "description": "Get a single workout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Workout ID",
+            "schema": {
+              "type": "string",
+              "example": "65132470bfb0d195cdebe61f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workout"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No such workout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "No such workout"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a workout",
+        "description": "Delete a workout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Workout ID",
+            "schema": {
+              "type": "string",
+              "example": "65132470bfb0d195cdebe61f"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Workout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workout"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No such workout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "No such workout"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a workout",
+        "description": "Update a workout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Workout ID",
+            "schema": {
+              "type": "string",
+              "example": "65132470bfb0d195cdebe61f"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "load": {
+                    "type": "number",
+                    "description": "Load",
+                    "example": 20,
+                    "required": false
+                  },
+                  "reps": {
+                    "type": "number",
+                    "description": "Number of reps",
+                    "example": 15,
+                    "required": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Workout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workout"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Please fill in all fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "Please fill in all fields"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "description": "No such workout",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Error message",
+                      "example": "No such workout"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Workout": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Workout ID",
+            "example": "65132470bfb0d195cdebe61f"
+          },
+          "title": {
+            "type": "string",
+            "description": "Workout title",
+            "example": "Barbell Curl"
+          },
+          "reps": {
+            "type": "number",
+            "description": "Number of reps",
+            "example": 15
+          },
+          "load": {
+            "type": "number",
+            "description": "Load",
+            "example": 20
+          },
+          "user_id": {
+            "type": "string",
+            "description": "User ID",
+            "example": "651318f48d779bfb2b05230c"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Workout creation date",
+            "example": "2023-09-26T18:35:28.585Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "description": "Workout last update date",
+            "example": "2023-09-26T18:37:36.091Z"
+          },
+          "__v": {
+            "type": "number",
+            "description": "Version",
+            "example": 0
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT bearer token",
+        "in": "header",
+        "name": "Authorization",
+        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"
+      }
+    },
+    "responses": {
+      "UnauthorizedError": {
+        "description": "Access token is missing or invalid",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "type": "string",
+                  "description": "Error message",
+                  "example": "Request is not authorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

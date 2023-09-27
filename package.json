@@ -19,6 +19,8 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.1.1",
     "nodemon": "^2.0.22",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0",
     "validator": "^13.9.0",
     "yarn": "^1.22.19"
   }
