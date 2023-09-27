@@ -1,6 +1,8 @@
 # Workoutbuddy_server
 Nodejs and Express based backend server api, deployed on render.
+
 Base URL: https://workoutapi-fjcr.onrender.com/api
+
 Swagger: https://workoutapi-fjcr.onrender.com/api-docs
 
 ## Method
