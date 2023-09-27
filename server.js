@@ -23,8 +23,12 @@ const swaggerDefinition = {
       url: 'http://localhost:8000/api',
       description: 'Development server',
     },
+    {
+      "url": "https://workoutapi-fjcr.onrender.com/api",
+      "description": "Production server"
+    }
   ],
-  schemes: ['http'],
+  schemes: ['http', 'https'],
   authorization: {
     type: 'Bearer token',
     in: 'header',
